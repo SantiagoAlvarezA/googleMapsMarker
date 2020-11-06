@@ -1,5 +1,7 @@
 
-
+markers = [];
+circles = [];
+let map;
 
 const citymap = {
     origen: {
@@ -16,7 +18,7 @@ const citymap = {
 
 function initMap() {
     // Create the map.
-    const map = new google.maps.Map(document.getElementById("map"), {
+    map = new google.maps.Map(document.getElementById("map"), {
         zoom: 11,
         center: { lat: 4.636059, lng: -74.0722241 },
         mapTypeId: "roadmap",
@@ -36,6 +38,8 @@ function initMap() {
             center: citymap[city].center,
             radius: 500,
         });
+
+        circles.push(cityCircle);
     }
 
     // Add a marker at the center of the map.
@@ -43,11 +47,11 @@ function initMap() {
     addMarker(citymap.destino.center, map, "Destino", "#850000");
 
     formatingArr(arr).uniqueUrls.forEach(el => {
-        addUniqueUrlMarker(map,el.pos, el.url)
+        addUniqueUrlMarker(map, el.pos, el.url)
     });
 
     formatingArr(arr).multipleUrls.forEach(el => {
-        addMultipleUrlMarker(map,el.pos, el.url)
+        addMultipleUrlMarker(map, el.pos, el.url)
     });
 
 
@@ -82,11 +86,11 @@ function addMarker(location, map, title, fillColor) {
     });
 
 
-
+    markers.push(marker);
 
 }
 
-function addUniqueUrlMarker(map,location, url) {
+function addUniqueUrlMarker(map, location, url) {
 
     const contentString = `<img src="${url}" class="d-block w-100" alt="...">`;
 
@@ -102,10 +106,12 @@ function addUniqueUrlMarker(map,location, url) {
     marker.addListener("click", () => {
         infowindow.open(map, marker);
     });
+
+    markers.push(marker);
 }
 
 
-function addMultipleUrlMarker(map,location, urls) {
+function addMultipleUrlMarker(map, location, urls) {
     let contentString =
         `<div id="carouselExampleControls" class="carousel slide" style="width:100px" data-ride="carousel">
             <div class="carousel-inner" style="width:100px">`;
@@ -150,6 +156,8 @@ function addMultipleUrlMarker(map,location, urls) {
     marker.addListener("click", () => {
         infowindow.open(map, marker);
     });
+
+    markers.push(marker);
 }
 
 
@@ -213,3 +221,17 @@ function formatingArr(nehibourhood) {
         multipleUrls: multipleUrls
     };
 }
+
+const clearMarkers = document.getElementById("clearMarkers");
+clearMarkers.addEventListener('click', () => {
+    markers.forEach(el => {
+        el.setMap(null)
+    });
+});
+
+const clearCircles = document.getElementById("clearCircles");
+clearCircles.addEventListener('click', () => {
+    circles.forEach(el => {
+        el.setMap(null)
+    });
+});
